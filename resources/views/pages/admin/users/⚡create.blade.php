@@ -32,6 +32,7 @@ new #[Layout('layouts.app')] class extends Component {
         User::create($validated);
 
         $this->redirect(route('users'), navigate: true);
+        Flux::toast(variant: 'success', text: __('User aangemaakt.'));
     }
 };
 ?>

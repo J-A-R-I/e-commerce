@@ -27,15 +27,13 @@ new #[Layout('layouts.app')] class extends Component {
         ]);
 
         $this->role->update($validated);
+        $this->store->touch();
 
         $this->redirect(route('roles'), navigate: true);
     }
     public function delete(Role $role): void
-
-    public function delete(): void
     {
         $role->delete();
-        Flux::toast(variant: 'success', text: __('User verwijderd.'));
         $this->role->delete(Role $role);
         $this->redirect(route('roles'), navigate: true);
         Flux::toast(variant: 'success', text: __('Rol verwijderd.'));

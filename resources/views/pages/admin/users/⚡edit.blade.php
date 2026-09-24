@@ -39,8 +39,10 @@ new #[Layout('layouts.app')] class extends Component {
         ]);
 
         $this->user->update($validated);
+        $this->store->touch();
 
         $this->redirect(route('users'), navigate: true);
+        Flux::toast(variant: 'success', text: __('User aangepast.'));
     }
 };
 ?>

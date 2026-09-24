@@ -41,7 +41,7 @@ new #[Layout('layouts.app')] class extends Component {
     public function delete(Role $role): void
     {
         $role->delete();
-        Flux::toast(variant: 'success', text: __('User verwijderd.'));
+        Flux::toast(variant: 'success', text: __('Rol verwijderd.'));
     }
 };
 ?>
