@@ -19,6 +19,7 @@ new #[Layout('layouts.app')] class extends Component {
         Role::create($validated);
 
         $this->redirect(route('roles'), navigate: true);
+        Flux::toast(variant: 'success', text: __('Rol aangemaakt.'));
     }
 };
 ?>
