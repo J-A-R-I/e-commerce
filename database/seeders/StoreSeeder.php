@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Store;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -23,10 +23,12 @@ class StoreSeeder extends Seeder
                 'description' => 'dit is een test winkel',
                 'logo' => '',
                 'banner' => '',
-                'is_active' => 'true',
+                'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]
+            ],
         ]);
+
+        Store::factory()->count(10)->create();
     }
 }

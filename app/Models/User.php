@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Role;
-
-
+use App\Enums\UserRole;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -61,7 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn() => trim("{$this->firstname} {$this->lastname}"),
+            get: fn () => trim("{$this->firstname} {$this->lastname}"),
         );
     }
 
@@ -71,14 +69,25 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function initials(): string
     {
         return Str::upper(
-            Str::substr($this->firstname, 0, 1) . Str::substr($this->lastname, 0, 1)
+            Str::substr($this->firstname, 0, 1).Str::substr($this->lastname, 0, 1)
         );
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role?->name === UserRole::ADMIN->value;
+    }
+
+    public function isVendor(): bool
+    {
+        return $this->role?->name === UserRole::VENDOR->value;
     }
 
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
+
     public function store(): HasOne
     {
         return $this->hasOne(Store::class);
