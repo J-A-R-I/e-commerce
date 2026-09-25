@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\Store;
 use App\Models\User;
 use Livewire\WithPagination;
@@ -20,6 +21,7 @@ new #[Layout('layouts.app')] class extends Component {
 
     #[Url(as: 'dir')]
     public string $sortDirection = 'desc';
+
     #[Url]
     public int $perPage = 5;
 
@@ -27,6 +29,7 @@ new #[Layout('layouts.app')] class extends Component {
     {
         $this->resetPage();
     }
+
     public function updatedStatus(): void
     {
         $this->resetPage();
@@ -87,33 +90,40 @@ new #[Layout('layouts.app')] class extends Component {
     <flux:card>
         <flux:table>
             <flux:table.columns>
-                <flux:table.column>{{ __('Naam') }}</flux:table.column>
+                <flux:table.column>{{ __('Winkel') }}</flux:table.column>
                 <flux:table.column>{{ __('Eigenaar') }}</flux:table.column>
-                <flux:table.column>{{ __('E-mailadres') }}</flux:table.column>
+                <flux:table.column>{{ __('E-mail') }}</flux:table.column>
                 <flux:table.column>{{ __('Telefoon') }}</flux:table.column>
                 <flux:table.column>{{ __('Status') }}</flux:table.column>
                 <flux:table.column>{{ __('Aangemaakt') }}</flux:table.column>
-                <flux:table.column>{{ __('Geupdate') }}</flux:table.column>
                 <flux:table.column align="end">{{ __('Acties') }}</flux:table.column>
             </flux:table.columns>
-
             <flux:table.rows>
                 @forelse ($this->stores as $store)
                     <flux:table.row :key='$store->id'>
                         <flux:table.cell class="font-medium text-zinc-900 dark:text-white">
                             {{ $store->name }}
                         </flux:table.cell>
-                        <flux:table.cell>{{ $store->user?->name ?? '-' }}</flux:table.cell>
-                        <flux:table.cell>{{ $store->email }}</flux:table.cell>
-                        <flux:table.cell>{{ $store->phone }}</flux:table.cell>
                         <flux:table.cell>
-                            <flux:badge :color="$store->is_active ? 'green' : 'zinc'" size="sm" inset="top bottom">
+                            {{ $store->user?->name ?? '-' }}
+                        </flux:table.cell>
+                        <flux:table.cell>
+                            {{ $store->email }}
+                        </flux:table.cell>
+                        <flux:table.cell>
+                            {{ $store->phone }}
+                        </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:badge size="sm" :color="$store->is_active ? 'green' : 'zinc'">
                                 {{ $store->is_active ? __('Actief') : __('Inactief') }}
                             </flux:badge>
                         </flux:table.cell>
-                        <flux:table.cell>{{ $store->created_at?->format('d-m-Y') }}</flux:table.cell>
-                        <flux:table.cell>{{ $store->updated_at?->format('d-m-Y H:i') }}</flux:table.cell>
+                        <flux:table.cell class="text-xs text-zinc-500">
+                            {{ $store->created_at?->format('d-m-Y') }}
+                        </flux:table.cell>
                         <flux:table.cell align="end">
+                            <flux:button :href="route('dashboard', $store)" size="sm" icon="arrow-top-right-on-square"
+                                variant="primary" :title="__('Bekijk dashboard')" />
                             <flux:button :href="route('stores.show', $store)" size="sm" icon="eye" />
                             <flux:button :href="route('stores.edit', $store)" size="sm" icon="pencil-square" />
                             <flux:button wire:click="delete({{ $store->id }})"

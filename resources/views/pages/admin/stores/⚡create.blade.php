@@ -65,14 +65,12 @@ new #[Layout('layouts.app')] class extends Component {
         <form wire:submit="save" class="space-y-6">
             <div class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {{-- Rij 1: Naam & Slug --}}
                     <flux:input wire:model.live.debounce.300ms="name" :label="__('Winkelnaam')"
                         placeholder="{{ __('Bijv. Tech Store') }}" required />
 
                     <flux:input wire:model="slug" :label="__('Slug')" placeholder="{{ __('tech-store') }}"
                         required />
 
-                    {{-- Rij 2: Eigenaar & E-mailadres --}}
                     <flux:select wire:model="user_id" :label="__('Eigenaar')" required>
                         <flux:select.option value="">{{ __('Kies een eigenaar...') }}</flux:select.option>
                         @foreach ($this->users as $user)
@@ -85,7 +83,6 @@ new #[Layout('layouts.app')] class extends Component {
                     <flux:input wire:model="email" type="email" :label="__('E-mailadres')"
                         placeholder="{{ __('winkel@voorbeeld.nl') }}" />
 
-                    {{-- Rij 3: Telefoon & Status Switch --}}
                     <flux:input wire:model="phone" type="tel" :label="__('Telefoonnummer')"
                         placeholder="{{ __('+31 6 12345678') }}" />
 
@@ -93,14 +90,12 @@ new #[Layout('layouts.app')] class extends Component {
                         <flux:switch wire:model="is_active" :label="__('Actief')" />
                     </div>
 
-                    {{-- Rij 4: Logo & Banner --}}
                     <flux:input wire:model="logo" :label="__('Logo (URL)')"
                         placeholder="{{ __('pad/naar/logo.png') }}" />
 
                     <flux:input wire:model="banner" :label="__('Banner (URL)')"
                         placeholder="{{ __('pad/naar/banner.jpg') }}" />
 
-                    {{-- Rij 5: Beschrijving over volle 2 kolommen --}}
                     <div class="sm:col-span-2">
                         <flux:textarea wire:model="description" :label="__('Beschrijving')"
                             placeholder="{{ __('Korte omschrijving van de winkel...') }}" rows="3" />

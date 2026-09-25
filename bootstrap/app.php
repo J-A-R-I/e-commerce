@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsVendor;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,7 +14,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'admin' => IsAdmin::class,
+            'vendor' => IsVendor::class,
+        ]);
+
+        $middleware->redirectUsersTo(function (Request $request) {
+            $user = $request->user();
+            if ($user && $user->isAdmin()) {
+                return route('backend');
+            }
+            if ($user && $user->isVendor() && $user->store) {
+                return route('dashboard', $user->store);
+            }
+            return route('home');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
