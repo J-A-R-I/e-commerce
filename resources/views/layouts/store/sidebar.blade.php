@@ -36,6 +36,12 @@
         <flux:spacer />
 
         <flux:sidebar.nav>
+            @if(auth()->user()?->isAdmin())
+            <flux:sidebar.item icon="home" :href="route('backend')"
+                    :current="request()->routeIs('backend')" wire:navigate>
+                    {{ __('backend') }}
+                </flux:sidebar.item>
+                @endif
             <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit"
                 target="_blank">
                 {{ __('Repository') }}
@@ -61,6 +67,7 @@
 
             <flux:menu>
                 <flux:menu.radio.group>
+                    
                     <div class="p-0 text-sm font-normal">
                         <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                             <flux:avatar :name="auth()->user()->name" :initials="auth()->user()->initials()" />

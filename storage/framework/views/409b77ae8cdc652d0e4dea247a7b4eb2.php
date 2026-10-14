@@ -19,6 +19,12 @@
 <?php # [BlazeFolded]:{flux::header}:{C:\wamp64\www\ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/header.blade.php}:{1789445708} ?>
 <?php # [BlazeFolded]:{flux::toast}:{C:\wamp64\www\ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/toast/index.blade.php}:{1789445708} ?>
 <?php # [BlazeFolded]:{flux::toast.group}:{C:\wamp64\www\ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/toast/group.blade.php}:{1789445708} ?>
+<?php
+
+use App\Models\User;
+
+?>
+
 <!DOCTYPE html>
 <html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>" class="dark">
 

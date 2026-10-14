@@ -5,14 +5,19 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\Role;
+use Livewire\WithFileUploads;
 
 new #[Layout('layouts.app')] class extends Component {
+
+    use WithFileUploads;
+
     public User $user;
 
     public string $firstname = '';
     public string $lastname = '';
     public string $email = '';
     public int $role_id = 0;
+    public $photo = null;
 
     public function mount(User $user): void
     {
@@ -36,10 +41,20 @@ new #[Layout('layouts.app')] class extends Component {
             'lastname' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $this->user->id,
             'role_id' => 'required|exists:roles,id',
+            'photo' => ['nullable','image','mimes:jpg,jpeg,png,webp','max:5120',],
         ]);
 
+        $photo = $validated['photo'] ?? null;
+        unset($validated['photo']);
+
         $this->user->update($validated);
-        $this->store->touch();
+        $this->user->touch();
+
+        if ($photo) {
+                $this->user->addMedia($photo->getRealPath())
+                    ->usingFileName($photo->getClientOriginalName())
+                    ->toMediaCollection('profile_picture');
+            }
 
         $this->redirect(route('users'), navigate: true);
         Flux::toast(variant: 'success', text: __('User aangepast.'));
@@ -75,6 +90,38 @@ new #[Layout('layouts.app')] class extends Component {
                         </flux:select.option>
                     @endforeach
                 </flux:select>
+
+                <div class="space-y-2">
+                        <label
+                            for="photo"
+                            class="block text-sm font-medium text-zinc-900 dark:text-white"
+                        >
+                            Productfoto
+                        </label>
+
+                        <input
+                            id="photo"
+                            type="file"
+                            wire:model="photo"
+                            accept="image/jpeg,image/png,image/webp"
+                            class="block w-full text-sm text-zinc-500
+                                file:mr-4 file:rounded-lg file:border-0
+                                file:bg-zinc-100 file:px-4 file:py-2
+                                file:font-medium file:text-zinc-900
+                                hover:file:bg-zinc-200
+                                dark:file:bg-zinc-800 dark:file:text-white"
+                        />
+
+                        @error('photo')
+                            <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        <div wire:loading wire:target="photo">
+                            <p class="text-sm text-zinc-500">
+                                Foto wordt geüpload...
+                            </p>
+                        </div>
+                    </div>
             </div>
             <div class="flex items-center justify-end gap-3">
                 <flux:button href="{{ route('users') }}" variant="ghost">

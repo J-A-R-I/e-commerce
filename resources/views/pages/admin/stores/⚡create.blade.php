@@ -6,18 +6,22 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+
 
 new #[Layout('layouts.app')] class extends Component {
+use WithFileUploads;
+
     public string $name = '';
     public string $user_id = '';
     public string $email = '';
     public string $phone = '';
     public string $slug = '';
     public string $description = '';
-    public string $logo = '';
-    public string $banner = '';
     public bool $is_active = true;
-
+    public $logo = null;
+    public $banner = null;
+    
     #[Computed]
     public function users()
     {
@@ -38,12 +42,34 @@ new #[Layout('layouts.app')] class extends Component {
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:30',
             'description' => 'nullable|string|max:2000',
-            'logo' => 'nullable|string|max:255',
-            'banner' => 'nullable|string|max:255',
+            'logo' => ['nullable', 'image', 'max:5120'],
+            'banner' => ['nullable', 'image', 'max:5120'],
             'is_active' => 'boolean',
         ]);
 
-        Store::create($validated);
+        
+        $logo = $validated['logo'] ?? null;
+        unset($validated['logo']);
+
+        
+        $banner = $validated['banner'] ?? null;
+        unset($validated['banner']);
+        
+        $store = Store::create($validated);
+
+        if ($logo) {
+            $store->addMedia($logo->getRealPath())
+                ->usingFileName($logo->getClientOriginalName())
+                ->toMediaCollection('store_logo');
+        }
+
+        
+        if ($banner) {
+            $store->addMedia($banner->getRealPath())
+                ->usingFileName($banner->getClientOriginalName())
+                ->toMediaCollection('store_banner');
+        }
+
 
         $this->redirect(route('stores'), navigate: true);
         Flux::toast(variant: 'success', text: __('Store aangemaakt.'));
@@ -90,15 +116,43 @@ new #[Layout('layouts.app')] class extends Component {
                         <flux:switch wire:model="is_active" :label="__('Actief')" />
                     </div>
 
-                    <flux:input wire:model="logo" :label="__('Logo (URL)')"
-                        placeholder="{{ __('pad/naar/logo.png') }}" />
-
-                    <flux:input wire:model="banner" :label="__('Banner (URL)')"
-                        placeholder="{{ __('pad/naar/banner.jpg') }}" />
-
                     <div class="sm:col-span-2">
                         <flux:textarea wire:model="description" :label="__('Beschrijving')"
                             placeholder="{{ __('Korte omschrijving van de winkel...') }}" rows="3" />
+                    </div>
+
+                    <div>
+                    <p>logo</p>
+                    <input
+                            id="logo"
+                            type="file"
+                            wire:model="logo"
+                            accept="image/jpeg,image/png,image/webp"
+                            class="block w-full text-sm text-zinc-500
+                                file:mr-4 file:rounded-lg file:border-0
+                                file:bg-zinc-100 file:px-4 file:py-2
+                                file:font-medium file:text-zinc-900
+                                hover:file:bg-zinc-200
+                                dark:file:bg-zinc-800 dark:file:text-white"
+                        />
+                    </div>
+
+                        <div>
+                        <p>banner</p>
+                            <input
+                                id="banner"
+                                type="file"
+                                wire:model="banner"
+                                accept="image/jpeg,image/png,image/webp"
+                                class="block w-full text-sm text-zinc-500
+                                    file:mr-4 file:rounded-lg file:border-0
+                                    file:bg-zinc-100 file:px-4 file:py-2
+                                    file:font-medium file:text-zinc-900
+                                    hover:file:bg-zinc-200
+                                    dark:file:bg-zinc-800 dark:file:text-white"
+                                    
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

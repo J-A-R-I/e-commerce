@@ -70,11 +70,33 @@ new #[Layout('layouts.app')] class extends Component {
         </div>
         <div class="flex justify-between items-center py-1.5">
             <span class="text-zinc-500 dark:text-zinc-400">{{ __('Logo') }}</span>
-            <span class="font-medium text-zinc-900 dark:text-white">{{ $store->logo ? $store->logo : '-' }}</span>
+            <span class="font-medium text-zinc-900 dark:text-white"> @if ($store->hasMedia('store_logo'))
+                                <img 
+                                src="{{ $store->getFirstMediaUrl('store_logo', 'thumb') }}"
+                                alt="{{ $store->name }}"
+                                class="size-9 rounded-md object-cover border border-zinc-200 dark:border-zinc-700 shrink-0" 
+                                loading="lazy"
+                                />
+                                @else
+                                <div class="size-9 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
+                                    <flux:icon icon="cube" class="size-5" />
+                                </div>
+                                @endif</span>
         </div>
         <div class="flex justify-between items-center py-1.5">
             <span class="text-zinc-500 dark:text-zinc-400">{{ __('Banner') }}</span>
-            <span class="font-medium text-zinc-900 dark:text-white">{{ $store->banner ? $store->banner : '-' }}</span>
+            <span class="font-medium text-zinc-900 dark:text-white"> @if ($store->hasMedia('store_banner'))
+                                <img 
+                                src="{{ $store->getFirstMediaUrl('store_banner', 'thumb') }}"
+                                alt="{{ $store->name }}"
+                                class="size-9 rounded-md object-cover border border-zinc-200 dark:border-zinc-700 shrink-0" 
+                                loading="lazy"
+                                />
+                                @else
+                                <div class="size-9 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
+                                    <flux:icon icon="cube" class="size-5" />
+                                </div>
+                                @endif</span>
         </div>
         <div class="flex justify-between items-center py-1.5">
             <span class="text-zinc-500 dark:text-zinc-400">{{ __('Active?') }}</span>

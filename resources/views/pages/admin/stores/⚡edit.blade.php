@@ -5,8 +5,11 @@ use App\Models\User;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 new #[Layout('layouts.app')] class extends Component {
+use WithFileUploads;
+
     public Store $store;
 
     public string $name = '';
@@ -15,9 +18,9 @@ new #[Layout('layouts.app')] class extends Component {
     public string $phone = '';
     public string $slug = '';
     public ?string $description = '';
-    public ?string $logo = '';
-    public ?string $banner = '';
     public bool $is_active = true;
+    public $logo = null;
+    public $banner = null;
 
     public function mount(Store $store): void
     {
@@ -48,12 +51,31 @@ new #[Layout('layouts.app')] class extends Component {
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:30',
             'description' => 'nullable|string|max:2000',
-            'logo' => 'nullable|string|max:255',
-            'banner' => 'nullable|string|max:255',
+            'logo' => ['nullable', 'image', 'max:5120'],
+            'banner' => ['nullable', 'image', 'max:5120'],
             'is_active' => 'boolean',
         ]);
 
+        $logo = $validated['logo'] ?? null;
+        unset($validated['logo']);
+
+        
+        $banner = $validated['banner'] ?? null;
+        unset($validated['banner']);
+
         $this->store->update($validated);
+
+        if ($logo) {
+                $this->store->addMedia($logo->getRealPath())
+                    ->usingFileName($logo->getClientOriginalName())
+                    ->toMediaCollection('store_logo');
+            }
+
+            if ($banner) {
+                $this->store->addMedia($banner->getRealPath())
+                    ->usingFileName($banner->getClientOriginalName())
+                    ->toMediaCollection('store_banner');
+            }
 
         Flux::toast(variant: 'success', text: __('Store aangepast.'));
         $this->redirect(route('stores'), navigate: true);
@@ -99,18 +121,45 @@ new #[Layout('layouts.app')] class extends Component {
                         <flux:switch wire:model="is_active" :label="__('Actief')" />
                     </div>
 
-                    <flux:input wire:model="logo" :label="__('Logo (URL)')"
-                        placeholder="{{ __('pad/naar/logo.png') }}" />
-
-                    <flux:input wire:model="banner" :label="__('Banner (URL)')"
-                        placeholder="{{ __('pad/naar/banner.jpg') }}" />
-
                     <div class="sm:col-span-2">
                         <flux:textarea wire:model="description" :label="__('Beschrijving')"
                             placeholder="{{ __('Korte omschrijving van de winkel...') }}" rows="3" />
                     </div>
+
+                    <div class="flex">
+                        <div>
+                            <p>Logo</p>
+                        <input
+                                id="logo"
+                                type="file"
+                                wire:model="logo"
+                                accept="image/jpeg,image/png,image/webp"
+                                class="block w-full text-sm text-zinc-500
+                                    file:mr-4 file:rounded-lg file:border-0
+                                    file:bg-zinc-100 file:px-4 file:py-2
+                                    file:font-medium file:text-zinc-900
+                                    hover:file:bg-zinc-200
+                                    dark:file:bg-zinc-800 dark:file:text-white"
+                            />
+                            <div>
+                            <div>
+                                <p>Banner</p>
+                                <input
+                                id="banner"
+                                type="file"
+                                wire:model="banner"
+                                accept="image/jpeg,image/png,image/webp"
+                                class="block w-full text-sm text-zinc-500
+                                    file:mr-4 file:rounded-lg file:border-0
+                                    file:bg-zinc-100 file:px-4 file:py-2
+                                    file:font-medium file:text-zinc-900
+                                    hover:file:bg-zinc-200
+                                    dark:file:bg-zinc-800 dark:file:text-white"
+                            />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
             <div class="flex items-center justify-end gap-3">
                 <flux:button href="{{ route('stores') }}" variant="ghost">

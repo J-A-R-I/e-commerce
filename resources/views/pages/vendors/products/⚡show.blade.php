@@ -47,6 +47,27 @@ new #[Layout('layouts.store')] class extends Component {
         </div>
     </div>
     <flux:card class="space-y-4 text-sm">
+        <div class="flex items-center gap-4 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+            @if ($product->hasMedia('product'))
+                <img 
+                    src="{{ $product->getFirstMediaUrl('product', 'thumb') }}"
+                    alt="{{ $product->name }}"
+                    class="size-16 rounded-lg object-cover border border-zinc-200 dark:border-zinc-700 shrink-0" 
+                    loading="lazy"
+                />
+            @else
+                <div class="size-16 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
+                    <flux:icon icon="cube" class="size-8" />
+                </div>
+            @endif
+            <div>
+                <flux:heading size="lg">{{ $product->name }}</flux:heading>
+                <div class="text-xs text-zinc-500 font-mono">
+                    {{ $product->sku ? 'SKU: ' . $product->sku : __('Geen SKU') }}
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-1">
             <div class="space-y-1">
                 <div class="flex justify-between items-center py-1.5 border-b border-zinc-100 dark:border-zinc-800">

@@ -116,14 +116,17 @@ new #[Layout('layouts.store')] class extends Component {
                     <flux:table.row :key='$product->id'>
                         <flux:table.cell>
                             <div class="flex items-center gap-3">
-                                @if ($product->image)
-                                    <img src="{{ $product->image }}" alt=""
-                                        class="size-9 rounded-md object-cover border border-zinc-200 dark:border-zinc-700 shrink-0" />
+                                @if ($product->hasMedia('product'))
+                                <img 
+                                src="{{ $product->getFirstMediaUrl('product', 'thumb') }}"
+                                alt="{{ $product->name }}"
+                                class="size-9 rounded-md object-cover border border-zinc-200 dark:border-zinc-700 shrink-0" 
+                                loading="lazy"
+                                />
                                 @else
-                                    <div
-                                        class="size-9 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
-                                        <flux:icon icon="cube" class="size-5" />
-                                    </div>
+                                <div class="size-9 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
+                                    <flux:icon icon="cube" class="size-5" />
+                                </div>
                                 @endif
 
                                 <div>

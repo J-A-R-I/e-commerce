@@ -90,6 +90,7 @@ new #[Layout('layouts.app')] class extends Component {
     <flux:card>
         <flux:table>
             <flux:table.columns>
+                <flux:table.column>{{ __('Logo')}}</flux:table.column>
                 <flux:table.column>{{ __('Winkel') }}</flux:table.column>
                 <flux:table.column>{{ __('Eigenaar') }}</flux:table.column>
                 <flux:table.column>{{ __('E-mail') }}</flux:table.column>
@@ -101,6 +102,21 @@ new #[Layout('layouts.app')] class extends Component {
             <flux:table.rows>
                 @forelse ($this->stores as $store)
                     <flux:table.row :key='$store->id'>
+
+                    <flux:table.cell>
+                    @if ($store->hasMedia('store_logo'))
+                                <img 
+                                src="{{ $store->getFirstMediaUrl('store_logo', 'thumb') }}"
+                                alt="{{ $store->name }}"
+                                class="size-9 rounded-md object-cover border border-zinc-200 dark:border-zinc-700 shrink-0" 
+                                loading="lazy"
+                                />
+                                @else
+                                <div class="size-9 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
+                                    <flux:icon icon="cube" class="size-5" />
+                                </div>
+                                @endif
+                            </flux:table.cell>
                         <flux:table.cell class="font-medium text-zinc-900 dark:text-white">
                             {{ $store->name }}
                         </flux:table.cell>
