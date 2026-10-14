@@ -18,6 +18,9 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property int $id
@@ -34,10 +37,10 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  */
 #[Fillable(['firstname', 'lastname', 'email', 'password', 'role_id'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
-class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
+class User extends Authenticatable implements HasMedia, MustVerifyEmail, PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
+    use HasFactory, InteractsWithMedia, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -81,6 +84,22 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function isVendor(): bool
     {
         return $this->role?->name === UserRole::VENDOR->value;
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('profile_picture')
+            ->singleFile()
+            ->useDisk('public');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('avatar')
+            ->performOnCollections('profile_picture')
+            ->width(400)
+            ->height(400)
+            ->nonQueued();
     }
 
     public function role(): BelongsTo

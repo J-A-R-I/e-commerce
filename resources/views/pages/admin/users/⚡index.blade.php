@@ -89,6 +89,7 @@ new #[Layout('layouts.app')] class extends Component {
     <flux:card>
         <flux:table>
             <flux:table.columns>
+                <flux:table.column></flux:table.column>
                 <flux:table.column>{{ __('Voornaam') }}</flux:table.column>
                 <flux:table.column>{{ __('Achternaam') }}</flux:table.column>
                 <flux:table.column>{{ __('Email') }}</flux:table.column>
@@ -101,6 +102,22 @@ new #[Layout('layouts.app')] class extends Component {
             <flux:table.rows>
                 @foreach ($this->users as $user)
                     <flux:table.row :key='$user->id'>
+                         @if ($user->hasMedia('profile_picture'))
+                         <flux:table.cell>
+                                <img 
+                                src="{{ $user->getFirstMediaUrl('profile_picture', 'avatar') }}"
+                                alt="{{ $user->name }}"
+                                class="size-9 rounded-full object-cover border border-zinc-200 dark:border-zinc-700 shrink-0" 
+                                loading="lazy"
+                                />
+                                </flux:table.cell>
+                             @else
+                             <flux:table.cell>
+                                <div class="size-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
+                                    <flux:icon icon="user" class="size-5" />
+                                </div>
+                                </flux:table.cell>
+                        @endif
                         <flux:table.cell>{{ $user->firstname }}</flux:table.cell>
                         <flux:table.cell>{{ $user->lastname }}</flux:table.cell>
                         <flux:table.cell>{{ $user->email }}</flux:table.cell>

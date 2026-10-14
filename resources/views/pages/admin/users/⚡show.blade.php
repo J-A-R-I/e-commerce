@@ -46,6 +46,24 @@ new #[Layout('layouts.app')] class extends Component {
 
     <flux:card class="space-y-3 text-sm">
         <div class="flex justify-between items-center py-1.5">
+            <span class="text-zinc-500 dark:text-zinc-400">{{ __('Profielfoto') }}</span>
+            <span class="font-medium text-zinc-900 dark:text-white">
+                @if ($user->hasMedia('profile_picture'))
+                    <img 
+                        src="{{ $user->getFirstMediaUrl('profile_picture', 'avatar') }}"
+                        alt="{{ $user->name }}"
+                        class="size-12 rounded-full object-cover border border-zinc-200 dark:border-zinc-700 shrink-0" 
+                        loading="lazy"
+                    />
+                @else
+                    <div class="size-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
+                        <flux:icon icon="user" class="size-6" />
+                    </div>
+                @endif
+            </span>
+        </div>
+
+        <div class="flex justify-between items-center py-1.5">
             <span class="text-zinc-500 dark:text-zinc-400">{{ __('Voornaam') }}</span>
             <span class="font-medium text-zinc-900 dark:text-white">{{ $user->firstname }}</span>
         </div>

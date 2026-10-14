@@ -5,13 +5,17 @@ use App\Models\User;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+
 
 new #[Layout('layouts.app')] class extends Component {
+use WithFileUploads;
     public string $firstname = '';
     public string $lastname = '';
     public string $email = '';
     public string $password = '';
     public int $role_id = 0;
+        public $photo = null;
 
     #[Computed]
     public function roles()
@@ -27,9 +31,19 @@ new #[Layout('layouts.app')] class extends Component {
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
             'role_id' => 'required|exists:roles,id',
+            'photo' => ['nullable', 'image', 'max:5120'],
         ]);
 
-        User::create($validated);
+        $photo = $validated['photo'] ?? null;
+        unset($validated['photo']);
+        
+        $user = User::create($validated);
+
+        if ($photo) {
+            $user->addMedia($photo->getRealPath())
+                ->usingFileName($photo->getClientOriginalName())
+                ->toMediaCollection('profile_picture');
+        }
 
         $this->redirect(route('users'), navigate: true);
         Flux::toast(variant: 'success', text: __('User aangemaakt.'));
@@ -69,6 +83,38 @@ new #[Layout('layouts.app')] class extends Component {
                         </flux:select.option>
                     @endforeach
                 </flux:select>
+
+                <div class="space-y-2">
+                        <label
+                            for="photo"
+                            class="block text-sm font-medium text-zinc-900 dark:text-white"
+                        >
+                            Productfoto
+                        </label>
+
+                        <input
+                            id="photo"
+                            type="file"
+                            wire:model="photo"
+                            accept="image/jpeg,image/png,image/webp"
+                            class="block w-full text-sm text-zinc-500
+                                file:mr-4 file:rounded-lg file:border-0
+                                file:bg-zinc-100 file:px-4 file:py-2
+                                file:font-medium file:text-zinc-900
+                                hover:file:bg-zinc-200
+                                dark:file:bg-zinc-800 dark:file:text-white"
+                        />
+
+                        @error('photo')
+                            <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        <div wire:loading wire:target="photo">
+                            <p class="text-sm text-zinc-500">
+                                Foto wordt geüpload...
+                            </p>
+                        </div>
+                    </div>
             </div>
 
             <flux:separator />

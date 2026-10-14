@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('phone');
             $table->string('slug');
             $table->string('description')->nullable();
-            $table->string('logo')->nullable();
-            $table->string('banner')->nullable();
             $table->boolean('is_active');
             $table->timestamps();
         });

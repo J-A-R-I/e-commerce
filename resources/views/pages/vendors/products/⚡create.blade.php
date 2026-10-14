@@ -7,8 +7,10 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 new #[Layout('layouts.store')] class extends Component {
+use WithFileUploads;
     public Store $store;
 
     public string $name = '';
@@ -18,8 +20,8 @@ new #[Layout('layouts.store')] class extends Component {
     public ?string $price = null;
     public int $stock = 0;
     public ?string $sku = null;
-    public ?string $image = null;
     public bool $is_active = true;
+    public $photo = null;
 
     public function mount(Store $store): void
     {
@@ -47,12 +49,22 @@ new #[Layout('layouts.store')] class extends Component {
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'sku' => 'nullable|string|max:255|unique:products,sku',
-            'image' => 'nullable|string|max:255',
             'is_active' => 'boolean',
+            'photo' => ['nullable', 'image', 'max:5120'],
         ]);
 
+        $photo = $validated['photo'] ?? null;
+        unset($validated['photo']);
+
         $validated['store_id'] = $this->store->id;
-        Product::create($validated);
+
+        $product = Product::create($validated);
+
+        if ($photo) {
+            $product->addMedia($photo->getRealPath())
+                ->usingFileName($photo->getClientOriginalName())
+                ->toMediaCollection('product');
+        }
 
         Flux::toast(variant: 'success', text: __('Product aangemaakt.'));
         $this->redirect(route('products', $this->store), navigate: true);
@@ -98,8 +110,6 @@ new #[Layout('layouts.store')] class extends Component {
                     <flux:input wire:model="stock" type="number" min="0" :label="__('Voorraad')"
                         placeholder="{{ __('10') }}" required />
 
-                    <flux:input wire:model="image" :label="__('Foto')" placeholder="{{ __('Foto URL of pad') }}" />
-
                     <div class="flex items-center sm:pt-6">
                         <flux:switch wire:model="is_active" :label="__('Actief')" />
                     </div>
@@ -107,6 +117,38 @@ new #[Layout('layouts.store')] class extends Component {
                     <div class="sm:col-span-3">
                         <flux:textarea wire:model="description" :label="__('Beschrijving')"
                             placeholder="{{ __('Korte omschrijving van het product...') }}" rows="3" />
+                    </div>
+
+                    <div class="space-y-2">
+                        <label
+                            for="photo"
+                            class="block text-sm font-medium text-zinc-900 dark:text-white"
+                        >
+                            Productfoto
+                        </label>
+
+                        <input
+                            id="photo"
+                            type="file"
+                            wire:model="photo"
+                            accept="image/jpeg,image/png,image/webp"
+                            class="block w-full text-sm text-zinc-500
+                                file:mr-4 file:rounded-lg file:border-0
+                                file:bg-zinc-100 file:px-4 file:py-2
+                                file:font-medium file:text-zinc-900
+                                hover:file:bg-zinc-200
+                                dark:file:bg-zinc-800 dark:file:text-white"
+                        />
+
+                        @error('photo')
+                            <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        <div wire:loading wire:target="photo">
+                            <p class="text-sm text-zinc-500">
+                                Foto wordt geüpload...
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

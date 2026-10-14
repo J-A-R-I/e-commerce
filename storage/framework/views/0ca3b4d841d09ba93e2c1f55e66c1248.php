@@ -9,8 +9,8 @@
 <?php ob_start(); ?><ui-dropdown position="bottom start"  data-flux-dropdown>
     <?php ob_start(); ?>
     <?php if (!function_exists('_cf0167c748ceeb02bd8c3383305d2e43')) { $__blaze->compile('C:\wamp64\www\ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/sidebar/profile.blade.php', $__blaze->compiledPath.'/cf0167c748ceeb02bd8c3383305d2e43.php'); require $__blaze->compiledPath.'/cf0167c748ceeb02bd8c3383305d2e43.php'; } ?>
-<?php $__blaze->pushData(['name' => auth()->user()->name,'initials' => auth()->user()->initials(),'icon:trailing' => 'chevrons-up-down','dataTest' => 'sidebar-menu-button']); ?>
-<?php _cf0167c748ceeb02bd8c3383305d2e43($__blaze, ['name' => auth()->user()->name,'initials' => auth()->user()->initials(),'icon:trailing' => 'chevrons-up-down','dataTest' => 'sidebar-menu-button'], [], ['name', 'initials'], ['dataTest' => 'data-test'], $__this ?? (isset($this) ? $this : null)); ?>
+<?php $__blaze->pushData(['name' => auth()->user()->name,'initials' => auth()->user()->initials(),'avatar' => auth()->user()->getFirstMediaUrl('profile_picture', 'avatar') ?: null,'icon:trailing' => 'chevrons-up-down','dataTest' => 'sidebar-menu-button']); ?>
+<?php _cf0167c748ceeb02bd8c3383305d2e43($__blaze, ['name' => auth()->user()->name,'initials' => auth()->user()->initials(),'avatar' => auth()->user()->getFirstMediaUrl('profile_picture', 'avatar') ?: null,'icon:trailing' => 'chevrons-up-down','dataTest' => 'sidebar-menu-button'], [], ['name', 'initials', 'avatar'], ['dataTest' => 'data-test'], $__this ?? (isset($this) ? $this : null)); ?>
 <?php $__blaze->popData(); ?>
 
     <?php ob_start(); ?><ui-menu
@@ -20,9 +20,9 @@
 >
     <?php ob_start(); ?>
         <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-            <?php $blaze_memoized_key = \Livewire\Blaze\Memoizer\Memo::key("flux::avatar", ['name' => auth()->user()->name, 'initials' => auth()->user()->initials()]); ?><?php if ($blaze_memoized_key !== null && \Livewire\Blaze\Memoizer\Memo::has($blaze_memoized_key)) : ?><?php echo \Livewire\Blaze\Memoizer\Memo::get($blaze_memoized_key); ?><?php else : ?><?php ob_start(); ?><?php if (!function_exists('_bffe6c48ea7d30a306a4ff2e8052e2f6')) { $__blaze->compile('C:\wamp64\www\ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/avatar/index.blade.php', $__blaze->compiledPath.'/bffe6c48ea7d30a306a4ff2e8052e2f6.php'); require $__blaze->compiledPath.'/bffe6c48ea7d30a306a4ff2e8052e2f6.php'; } ?>
-<?php $__blaze->pushData(['name' => auth()->user()->name,'initials' => auth()->user()->initials()]); ?>
-<?php _bffe6c48ea7d30a306a4ff2e8052e2f6($__blaze, ['name' => auth()->user()->name,'initials' => auth()->user()->initials()], [], ['name', 'initials'], [], $__this ?? (isset($this) ? $this : null)); ?>
+            <?php $blaze_memoized_key = \Livewire\Blaze\Memoizer\Memo::key("flux::avatar", ['name' => auth()->user()->name, 'initials' => auth()->user()->initials(), 'src' => auth()->user()->getFirstMediaUrl('profile_picture', 'avatar') ?: null]); ?><?php if ($blaze_memoized_key !== null && \Livewire\Blaze\Memoizer\Memo::has($blaze_memoized_key)) : ?><?php echo \Livewire\Blaze\Memoizer\Memo::get($blaze_memoized_key); ?><?php else : ?><?php ob_start(); ?><?php if (!function_exists('_bffe6c48ea7d30a306a4ff2e8052e2f6')) { $__blaze->compile('C:\wamp64\www\ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/avatar/index.blade.php', $__blaze->compiledPath.'/bffe6c48ea7d30a306a4ff2e8052e2f6.php'); require $__blaze->compiledPath.'/bffe6c48ea7d30a306a4ff2e8052e2f6.php'; } ?>
+<?php $__blaze->pushData(['name' => auth()->user()->name,'initials' => auth()->user()->initials(),'src' => auth()->user()->getFirstMediaUrl('profile_picture', 'avatar') ?: null]); ?>
+<?php _bffe6c48ea7d30a306a4ff2e8052e2f6($__blaze, ['name' => auth()->user()->name,'initials' => auth()->user()->initials(),'src' => auth()->user()->getFirstMediaUrl('profile_picture', 'avatar') ?: null], [], ['name', 'initials', 'src'], [], $__this ?? (isset($this) ? $this : null)); ?>
 <?php $__blaze->popData(); ?><?php $blaze_memoized_html = ob_get_clean(); ?><?php if ($blaze_memoized_key !== null) { \Livewire\Blaze\Memoizer\Memo::put($blaze_memoized_key, $blaze_memoized_html); } ?><?php echo $blaze_memoized_html; ?><?php endif; ?>
             <div class="grid flex-1 text-start text-sm leading-tight">
                 <?php ob_start(); ?><div class="font-medium [:where(&amp;)]:text-zinc-800 [:where(&amp;)]:dark:text-white text-sm [&amp;:has(+[data-flux-subheading])]:mb-2 [[data-flux-subheading]+&amp;]:mt-2 truncate" data-flux-heading><?php ob_start(); ?><?php echo e(auth()->user()->name); ?><?php echo trim(ob_get_clean()); ?></div>
